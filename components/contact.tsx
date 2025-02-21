@@ -134,7 +134,7 @@ const Contact = () => {
                   <div className="flex items-center space-x-2">
                     <Linkedin className="h-5 w-5" />
                     <a
-                      href="https://linkedin.com/in/ilkaybaytar"
+                      href="https://linkedin.com/in/ilkay-baytar"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-primary transition-colors"
