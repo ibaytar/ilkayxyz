@@ -64,7 +64,9 @@ export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: 
     }
 
     // Try to load immediately if grecaptcha is already available
-    if (window.grecaptcha && window.grecaptcha.render) {
+    if (typeof window !== 'undefined' && 
+        window.grecaptcha && 
+        typeof window.grecaptcha.render === 'function') {
       loadReCaptcha()
     }
 
