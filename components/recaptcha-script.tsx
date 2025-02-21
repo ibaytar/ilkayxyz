@@ -35,14 +35,14 @@ export function RecaptchaScript() {
 
   return (
     <Script
-      src="https://www.google.com/recaptcha/api.js"
-      async
-      defer
+      src={`https://www.google.com/recaptcha/api.js?render=explicit`}
+      strategy="afterInteractive"
       onLoad={() => {
         console.log("reCAPTCHA script loaded")
-        window.dispatchEvent(new Event("recaptchaLoaded"))
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event("recaptchaLoaded"))
+        }
       }}
-      strategy="afterInteractive"
     />
   )
 }

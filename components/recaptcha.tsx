@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface ReCaptchaProps {
   onVerifyAction: (token: string) => void;
@@ -33,49 +33,53 @@ declare global {
 
 export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: ReCaptchaProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const widgetIdRef = useRef<number>()
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     const loadReCaptcha = () => {
-      if (!window.grecaptcha) {
-        console.error("reCAPTCHA not loaded yet")
-        return
-      }
-
       const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
       if (!siteKey) {
         console.error("NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set")
         return
       }
 
+      if (!window.grecaptcha?.render) {
+        console.error("reCAPTCHA not loaded yet")
+        return
+      }
+
+      if (!containerRef.current || isLoaded) {
+        return
+      }
+
       try {
-        if (containerRef.current && !widgetIdRef.current) {
-          console.log("Rendering reCAPTCHA with site key:", siteKey)
-          widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
-            sitekey: siteKey,
-            callback: onVerifyAction,
-            theme,
-            size,
-          })
-        }
+        window.grecaptcha.render(containerRef.current, {
+          sitekey: siteKey,
+          callback: onVerifyAction,
+          theme,
+          size,
+        })
+        setIsLoaded(true)
       } catch (error) {
         console.error("Error rendering reCAPTCHA:", error)
       }
     }
 
-    // Try to load immediately if grecaptcha is already available
-    if (typeof window !== 'undefined' && 
-        window.grecaptcha && 
-        typeof window.grecaptcha.render === 'function') {
-      loadReCaptcha()
+    const handleRecaptchaLoad = () => {
+      if (typeof window !== 'undefined' && window.grecaptcha) {
+        loadReCaptcha()
+      }
     }
 
-    // Also listen for the load event
-    window.addEventListener("recaptchaLoaded", loadReCaptcha)
+    // Try to load if already available
+    handleRecaptchaLoad()
+
+    // Listen for the load event
+    window.addEventListener("recaptchaLoaded", handleRecaptchaLoad)
     return () => {
-      window.removeEventListener("recaptchaLoaded", loadReCaptcha)
+      window.removeEventListener("recaptchaLoaded", handleRecaptchaLoad)
     }
-  }, [onVerifyAction, theme, size])
+  }, [onVerifyAction, theme, size, isLoaded])
 
   return (
     <div 
