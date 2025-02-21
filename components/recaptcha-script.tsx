@@ -35,7 +35,7 @@ export function RecaptchaScript() {
 
   return (
     <Script
-      src={`https://www.google.com/recaptcha/api.js?render=${siteKey}`}
+      src="https://www.google.com/recaptcha/api.js"
       async
       defer
       onLoad={() => {

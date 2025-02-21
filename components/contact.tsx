@@ -130,19 +130,21 @@ const Contact = () => {
                       className="min-h-[120px]"
                     />
                   </div>
-                  <div className="mb-4">
-                    <p className="text-sm text-muted-foreground mb-2">Please complete the reCAPTCHA verification:</p>
-                    <ReCaptcha onVerifyAction={handleRecaptchaVerify} />
+                  <div className="mb-6">
+                    <p className="text-sm text-muted-foreground mb-4">Please complete the reCAPTCHA verification:</p>
+                    <div className="flex justify-start">
+                      <ReCaptcha onVerifyAction={handleRecaptchaVerify} />
+                    </div>
                   </div>
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Sending..." : "Send Message"}
-                  </Button>
-                  {(error || !recaptchaToken) && (
-                    <div className="flex items-center space-x-2 text-amber-500 mt-2">
+                  {error && (
+                    <div className="flex items-center space-x-2 text-amber-500 mb-4">
                       <AlertCircle size={16} />
-                      <span>{error || "Please complete the reCAPTCHA verification before sending."}</span>
+                      <span>{error}</span>
                     </div>
                   )}
+                  <Button type="submit" disabled={isSubmitting || !recaptchaToken}>
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                  </Button>
                 </form>
               )}
             </div>

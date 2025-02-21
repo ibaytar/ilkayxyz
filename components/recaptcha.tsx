@@ -49,21 +49,13 @@ export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: 
       }
 
       try {
-        if (containerRef.current) {
+        if (containerRef.current && !widgetIdRef.current) {
           console.log("Rendering reCAPTCHA with site key:", siteKey)
           widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
             sitekey: siteKey,
             callback: onVerifyAction,
             theme,
             size,
-            expired: () => {
-              console.log("reCAPTCHA expired")
-              onVerifyAction("")
-            },
-            error: () => {
-              console.error("reCAPTCHA error occurred")
-              onVerifyAction("")
-            }
           })
         }
       } catch (error) {
@@ -72,7 +64,7 @@ export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: 
     }
 
     // Try to load immediately if grecaptcha is already available
-    if (window.grecaptcha) {
+    if (window.grecaptcha && window.grecaptcha.render) {
       loadReCaptcha()
     }
 
@@ -83,5 +75,11 @@ export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: 
     }
   }, [onVerifyAction, theme, size])
 
-  return <div ref={containerRef} className="g-recaptcha" data-size={size} data-theme={theme} />
+  return (
+    <div 
+      ref={containerRef} 
+      className="g-recaptcha"
+      style={{ minHeight: '78px' }}
+    />
+  )
 }
