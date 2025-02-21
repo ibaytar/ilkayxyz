@@ -27,9 +27,17 @@ declare global {
 }
 
 export function RecaptchaScript() {
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+  if (!siteKey) {
+    console.error("NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set")
+    return null
+  }
+
   return (
     <Script
-      src="https://www.google.com/recaptcha/api.js"
+      src={`https://www.google.com/recaptcha/api.js?render=${siteKey}`}
+      async
+      defer
       onLoad={() => {
         console.log("reCAPTCHA script loaded")
         window.dispatchEvent(new Event("recaptchaLoaded"))

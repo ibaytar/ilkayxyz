@@ -33,11 +33,12 @@ declare global {
 
 export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: ReCaptchaProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const widgetIdRef = useRef<number>()
 
   useEffect(() => {
     const loadReCaptcha = () => {
       if (!window.grecaptcha) {
-        console.error("reCAPTCHA not loaded")
+        console.error("reCAPTCHA not loaded yet")
         return
       }
 
@@ -49,11 +50,20 @@ export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: 
 
       try {
         if (containerRef.current) {
-          window.grecaptcha.render(containerRef.current, {
+          console.log("Rendering reCAPTCHA with site key:", siteKey)
+          widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
             sitekey: siteKey,
             callback: onVerifyAction,
             theme,
             size,
+            expired: () => {
+              console.log("reCAPTCHA expired")
+              onVerifyAction("")
+            },
+            error: () => {
+              console.error("reCAPTCHA error occurred")
+              onVerifyAction("")
+            }
           })
         }
       } catch (error) {
@@ -61,13 +71,17 @@ export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: 
       }
     }
 
+    // Try to load immediately if grecaptcha is already available
     if (window.grecaptcha) {
       loadReCaptcha()
-    } else {
-      window.addEventListener("recaptchaLoaded", loadReCaptcha)
-      return () => window.removeEventListener("recaptchaLoaded", loadReCaptcha)
+    }
+
+    // Also listen for the load event
+    window.addEventListener("recaptchaLoaded", loadReCaptcha)
+    return () => {
+      window.removeEventListener("recaptchaLoaded", loadReCaptcha)
     }
   }, [onVerifyAction, theme, size])
 
-  return <div ref={containerRef} />
+  return <div ref={containerRef} className="g-recaptcha" data-size={size} data-theme={theme} />
 }
