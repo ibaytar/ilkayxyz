@@ -1,187 +1,158 @@
-"use client"
+"use client";
 
-import type React from "react"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import emailjs from "@emailjs/browser";
+import { Github, Linkedin, Mail, MapPin } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { useState, useRef, useCallback } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Mail, MapPin, Linkedin, Github, AlertCircle } from "lucide-react"
-import emailjs from "@emailjs/browser"
-import { ReCaptcha } from "./recaptcha"
+declare global {
+  interface Window {
+    onRecaptchaVerify: ((token: string) => void) | null;
+    grecaptcha: {
+      reset: () => void;
+    };
+  }
+}
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  })
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState("")
-  const [recaptchaToken, setRecaptchaToken] = useState<string>("")
-  const form = useRef<HTMLFormElement>(null)
+  const form = useRef<HTMLFormElement>(null);
+  const [recaptchaToken, setRecaptchaToken] = useState<string>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prevState) => ({ ...prevState, [name]: value }))
-  }
+  useEffect(() => {
+    window.onRecaptchaVerify = (token: string) => {
+      setRecaptchaToken(token);
+    };
 
-  const handleRecaptchaVerify = useCallback((token: string) => {
-    console.log("reCAPTCHA verified with token:", token)
-    setRecaptchaToken(token)
-    setError("")
-  }, [])
+    const script = document.createElement("script");
+    script.src = "https://www.google.com/recaptcha/api.js";
+    script.async = true;
+    document.body.appendChild(script);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    return () => {
+      window.onRecaptchaVerify = null;
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+    };
+  }, []);
+
+  const sendEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!form.current) return;
 
     if (!recaptchaToken) {
-      setError("Please complete the reCAPTCHA verification before sending the message.")
-      return
+      alert("Please complete the reCAPTCHA verification");
+      return;
     }
-
-    if (!form.current) {
-      setError("Form not initialized properly. Please try again.")
-      return
-    }
-
-    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
-    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
-    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
-
-    if (!serviceId || !templateId || !publicKey) {
-      setError("Email service not configured properly. Please contact the administrator.")
-      return
-    }
-
-    setIsSubmitting(true)
-    setError("")
 
     try {
-      const result = await emailjs.sendForm(
-        serviceId,
-        templateId,
+      await emailjs.sendForm(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
         form.current,
-        publicKey
-      )
+        {
+          publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!,
+        }
+      );
 
-      console.log("SUCCESS!", result.text)
-      setFormData({ name: "", email: "", message: "" })
-      setIsSubmitted(true)
-      setTimeout(() => setIsSubmitted(false), 5000)
+      console.log("Email sent successfully");
+      form.current.reset();
+      window.grecaptcha.reset();
+      setRecaptchaToken("");
+      alert("Your message has been sent successfully!");
     } catch (error) {
-      console.error("FAILED...", error)
-      setError("Failed to send message. Please try again later.")
-    } finally {
-      setIsSubmitting(false)
+      console.error("Failed to send email");
+      alert("Failed to send message. Please try again.");
     }
-  }
+  };
 
   return (
-    <section id="contact" className="container mx-auto max-w-5xl py-12 md:py-24 lg:py-32">
+    <section
+      id="contact"
+      className="container mx-auto max-w-5xl py-12 md:py-24 lg:py-32"
+    >
       <h2 className="mb-8 text-3xl font-bold gradient-text">Get in Touch</h2>
       <Card>
         <CardContent className="p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-2xl font-bold mb-6">Contact Me</h3>
-              {isSubmitted ? (
-                <div
-                  className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
-                  role="alert"
-                >
-                  <strong className="font-bold">Thank you! </strong>
-                  <span className="block sm:inline">Your message has been sent successfully.</span>
+              <form ref={form} onSubmit={sendEmail} className="space-y-4">
+                <div>
+                  <Input
+                    type="text"
+                    name="from_name"
+                    placeholder="Your Name"
+                    required
+                  />
                 </div>
-              ) : (
-                <form ref={form} onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <Input
-                      type="text"
-                      id="name"
-                      name="name"
-                      placeholder="Your Name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      type="email"
-                      id="email"
-                      name="email"
-                      placeholder="Your Email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      placeholder="Your Message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      className="min-h-[120px]"
-                    />
-                  </div>
-                  <div className="mb-6">
-                    <p className="text-sm text-muted-foreground mb-4">Please complete the reCAPTCHA verification:</p>
-                    <div className="flex justify-start">
-                      <ReCaptcha onVerifyAction={handleRecaptchaVerify} />
-                    </div>
-                  </div>
-                  {error && (
-                    <div className="flex items-center space-x-2 text-amber-500 mb-4">
-                      <AlertCircle size={16} />
-                      <span>{error}</span>
-                    </div>
-                  )}
-                  <Button type="submit" disabled={isSubmitting || !recaptchaToken}>
-                    {isSubmitting ? "Sending..." : "Send Message"}
-                  </Button>
-                </form>
-              )}
+                <div>
+                  <Input
+                    type="email"
+                    name="from_email"
+                    placeholder="Your Email"
+                    required
+                  />
+                </div>
+                <div>
+                  <Textarea
+                    name="message"
+                    placeholder="Your Message"
+                    required
+                    className="min-h-[120px]"
+                  />
+                </div>
+                <div
+                  className="g-recaptcha mb-4"
+                  data-sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  data-callback="onRecaptchaVerify"
+                />
+                <Button type="submit" disabled={!recaptchaToken}>
+                  Send Message
+                </Button>
+              </form>
             </div>
+
             <div>
               <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
-                  <Mail size={20} className="text-primary" />
-                  <a href="mailto:ilkaybaytar@gmail.com" className="hover:underline text-primary">
-                    ilkaybaytar@gmail.com
+                  <Mail className="h-5 w-5" />
+                  <a href="mailto:ilkaybaytar@gmail.com">
+                    <span>ilkaybaytar@gmail.com</span>
                   </a>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <MapPin size={20} className="text-primary" />
-                  <span className="text-primary">İstanbul, Turkey</span>
+                  <MapPin className="h-5 w-5" />
+                  <span>Istanbul, Turkey</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Linkedin size={20} className="text-primary" />
-                  <a
-                    href="https://www.linkedin.com/in/ilkay-baytar/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline text-primary"
-                  >
-                    LinkedIn
-                  </a>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Github size={20} className="text-primary" />
-                  <a
-                    href="https://github.com/ibaytar"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline text-primary"
-                  >
-                    GitHub
-                  </a>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Linkedin className="h-5 w-5" />
+                    <a
+                      href="https://linkedin.com/in/ilkaybaytar"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-primary transition-colors"
+                    >
+                      LinkedIn
+                    </a>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Github className="h-5 w-5" />
+                    <a
+                      href="https://github.com/ibaytar"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-primary transition-colors"
+                    >
+                      GitHub
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -189,7 +160,7 @@ const Contact = () => {
         </CardContent>
       </Card>
     </section>
-  )
-}
+  );
+};
 
-export default Contact
+export default Contact;
