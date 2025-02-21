@@ -22,7 +22,7 @@ const Hero = () => {
         transition={{ duration: 0.5, delay: 0.2 }}
       >
         <span className="relative z-10 text-primary">Statistician</span>
-        <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-50 blur-lg -z-10"></span>
+        <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-50 blur-lg -z-10" />
       </motion.h2>
       <motion.p
         className="max-w-[700px] text-center text-lg text-muted-foreground"
@@ -56,4 +56,3 @@ const Hero = () => {
 }
 
 export default Hero
-

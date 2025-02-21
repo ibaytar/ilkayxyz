@@ -42,15 +42,29 @@ const Contact = () => {
       return
     }
 
+    if (!form.current) {
+      setError("Form not initialized properly. Please try again.")
+      return
+    }
+
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+
+    if (!serviceId || !templateId || !publicKey) {
+      setError("Email service not configured properly. Please contact the administrator.")
+      return
+    }
+
     setIsSubmitting(true)
     setError("")
 
     try {
       const result = await emailjs.sendForm(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        form.current!,
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+        serviceId,
+        templateId,
+        form.current,
+        publicKey
       )
 
       console.log("SUCCESS!", result.text)
@@ -118,7 +132,7 @@ const Contact = () => {
                   </div>
                   <div className="mb-4">
                     <p className="text-sm text-muted-foreground mb-2">Please complete the reCAPTCHA verification:</p>
-                    <ReCaptcha onVerify={handleRecaptchaVerify} />
+                    <ReCaptcha onVerifyAction={handleRecaptchaVerify} />
                   </div>
                   <Button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? "Sending..." : "Send Message"}
@@ -177,4 +191,3 @@ const Contact = () => {
 }
 
 export default Contact
-

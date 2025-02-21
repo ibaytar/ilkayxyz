@@ -85,6 +85,8 @@ export function Navbar() {
               size="icon"
               onClick={() => setMenuOpen(!menuOpen)}
               className="hover:bg-primary/10 hover:text-primary rounded-full"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
             >
               <motion.div
                 initial={{ rotate: 0 }}
@@ -97,7 +99,11 @@ export function Navbar() {
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  aria-hidden="true"
+                  role="img"
                 >
+                  <title>Menu Icon</title>
+                  <desc>Toggle navigation menu</desc>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
               </motion.div>
@@ -164,4 +170,3 @@ export function Navbar() {
 }
 
 export default Navbar
-

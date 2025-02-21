@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge"
 
 const projects = [
   {
+    id: "lung-cancer-eda-2024",
     title: "Lung Cancer EDA and Prediction",
     date: "06/2024",
     description: "Streamlit Web Application",
@@ -14,6 +15,7 @@ const projects = [
     technologies: ["Python", "Streamlit", "Machine Learning", "EDA"],
   },
   {
+    id: "kpmg-coffee-shop-2023",
     title: "Data Analytics Challenge",
     date: "04/2023",
     description: "KPMG",
@@ -24,6 +26,7 @@ const projects = [
     technologies: ["Data Analytics", "Geospatial Analysis", "Business Strategy"],
   },
   {
+    id: "istanbul-solar-2023",
     title: "Istanbul Solar Panel Data",
     date: "01/2023",
     description: "Time Series Analysis",
@@ -34,6 +37,7 @@ const projects = [
     technologies: ["Time Series Analysis", "ARIMA", "Regression", "Energy Forecasting"],
   },
   {
+    id: "covid-viz-2022",
     title: "Data Visualization For COVID Data",
     date: "05/2022",
     description: "Shiny Web Application",
@@ -50,8 +54,8 @@ const Projects = () => {
     <section id="projects" className="container mx-auto max-w-5xl py-12 md:py-24 lg:py-32">
       <h2 className="mb-8 text-3xl font-bold gradient-text">Projects</h2>
       <div className="grid gap-6 md:grid-cols-2">
-        {projects.map((project, index) => (
-          <Card key={index}>
+        {projects.map((project) => (
+          <Card key={project.id}>
             <CardHeader>
               <CardTitle>{project.title}</CardTitle>
               <CardDescription>
@@ -60,15 +64,21 @@ const Projects = () => {
             </CardHeader>
             <CardContent>
               <ul className="list-disc pl-5 mb-4">
-                {project.details.map((detail, detailIndex) => (
-                  <li key={detailIndex} className="text-sm mb-1 text-primary">
+                {project.details.map((detail) => (
+                  <li 
+                    key={`${project.id}-${detail.toLowerCase().slice(0, 20).replace(/\s+/g, '-')}`}
+                    className="text-sm mb-1 text-primary"
+                  >
                     {detail}
                   </li>
                 ))}
               </ul>
               <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech, techIndex) => (
-                  <Badge key={techIndex} variant="outline">
+                {project.technologies.map((tech) => (
+                  <Badge 
+                    key={`${project.id}-${tech.toLowerCase().replace(/\s+/g, '-')}`}
+                    variant="outline"
+                  >
                     {tech}
                   </Badge>
                 ))}
@@ -82,4 +92,3 @@ const Projects = () => {
 }
 
 export default Projects
-

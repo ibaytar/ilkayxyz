@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 const Experience = () => {
   const experiences = [
     {
+      id: "burgan-bank-2024",
       title: "Data Engineer Intern",
       company: "Burgan Bank",
       location: "Istanbul, Turkey",
@@ -19,6 +20,7 @@ const Experience = () => {
       technologies: ["Apache NiFi", "ClickHouse", "Podman", "Docker", "Flask", "SQL"],
     },
     {
+      id: "arcelik-2023",
       title: "Data Analytics Intern",
       company: "Arçelik Global A.Ş.",
       location: "Istanbul, Turkey",
@@ -38,8 +40,8 @@ const Experience = () => {
     <section id="experience" className="container mx-auto max-w-5xl py-12 md:py-24 lg:py-32">
       <h2 className="mb-8 text-3xl font-bold gradient-text">Work Experience</h2>
       <div className="grid gap-6 md:grid-cols-2">
-        {experiences.map((exp, index) => (
-          <Card key={index}>
+        {experiences.map((exp) => (
+          <Card key={exp.id}>
             <CardHeader>
               <CardTitle>{exp.title}</CardTitle>
               <CardDescription>
@@ -49,15 +51,21 @@ const Experience = () => {
             </CardHeader>
             <CardContent>
               <ul className="list-disc pl-5 mb-4">
-                {exp.responsibilities.map((resp, respIndex) => (
-                  <li key={respIndex} className="text-sm mb-1 text-primary">
+                {exp.responsibilities.map((resp) => (
+                  <li 
+                    key={`${exp.id}-${resp.toLowerCase().slice(0, 20).replace(/\s+/g, '-')}`} 
+                    className="text-sm mb-1 text-primary"
+                  >
                     {resp}
                   </li>
                 ))}
               </ul>
               <div className="flex flex-wrap gap-2">
-                {exp.technologies.map((tech, techIndex) => (
-                  <Badge key={techIndex} variant="outline">
+                {exp.technologies.map((tech) => (
+                  <Badge 
+                    key={`${exp.id}-${tech.toLowerCase().replace(/\s+/g, '-')}`}
+                    variant="outline"
+                  >
                     {tech}
                   </Badge>
                 ))}
@@ -71,4 +79,3 @@ const Experience = () => {
 }
 
 export default Experience
-

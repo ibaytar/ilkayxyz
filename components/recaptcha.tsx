@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 
 interface ReCaptchaProps {
-  onVerify: (token: string) => void;
+  onVerifyAction: (token: string) => void;
   theme?: 'light' | 'dark';
   size?: 'normal' | 'compact';
 }
@@ -31,7 +31,7 @@ declare global {
   }
 }
 
-export function ReCaptcha({ onVerify, theme = 'light', size = 'normal' }: ReCaptchaProps) {
+export function ReCaptcha({ onVerifyAction, theme = 'light', size = 'normal' }: ReCaptchaProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export function ReCaptcha({ onVerify, theme = 'light', size = 'normal' }: ReCapt
         if (containerRef.current) {
           window.grecaptcha.render(containerRef.current, {
             sitekey: siteKey,
-            callback: onVerify,
+            callback: onVerifyAction,
             theme,
             size,
           })
@@ -67,7 +67,7 @@ export function ReCaptcha({ onVerify, theme = 'light', size = 'normal' }: ReCapt
       window.addEventListener("recaptchaLoaded", loadReCaptcha)
       return () => window.removeEventListener("recaptchaLoaded", loadReCaptcha)
     }
-  }, [onVerify, theme, size])
+  }, [onVerifyAction, theme, size])
 
   return <div ref={containerRef} />
 }

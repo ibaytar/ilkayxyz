@@ -32,8 +32,8 @@ const About = () => {
           </p>
           <h3 className="mb-4 text-xl font-semibold">Skills</h3>
           <div className="flex flex-wrap gap-2 mb-8">
-            {skills.map((skill, index) => (
-              <Badge key={index} variant="secondary">
+            {skills.map((skill) => (
+              <Badge key={skill.toLowerCase().replace(/\s+/g, '-')} variant="secondary">
                 {skill}
               </Badge>
             ))}
@@ -74,4 +74,3 @@ const About = () => {
 }
 
 export default About
-
