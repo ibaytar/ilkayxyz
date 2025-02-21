@@ -8,7 +8,7 @@ const dmSans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata = {
   title: "İlkay Şafak Baytar - Portfolio",
-  description: "Full-Stack Developer Portfolio",
+  description: "Data Analyst Portfolio",
 };
 
 export default function RootLayout({
