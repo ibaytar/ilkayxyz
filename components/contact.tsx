@@ -8,6 +8,7 @@ import emailjs from "@emailjs/browser";
 import { Github, Linkedin, Mail, MapPin, Loader2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 declare global {
   interface Window {
@@ -137,35 +138,38 @@ const Contact = () => {
             <div>
               <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
               <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <Mail className="h-5 w-5" />
-                  <a href="mailto:ilkaybaytar@gmail.com">
+                <div className="flex items-center space-x-2 group">
+                  <Mail className="h-5 w-5 transition-all duration-500 ease-in-out group-hover:text-primary" />
+                  <a 
+                    href="mailto:ilkaybaytar@gmail.com"
+                    className="transition-all duration-500 ease-in-out hover:text-primary hover:glow"
+                  >
                     <span>ilkaybaytar@gmail.com</span>
                   </a>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <MapPin className="h-5 w-5" />
-                  <span>Istanbul, Turkey</span>
+                <div className="flex items-center space-x-2 group">
+                  <MapPin className="h-5 w-5 transition-all duration-500 ease-in-out group-hover:text-primary" />
+                  <span className="transition-all duration-500 ease-in-out group-hover:text-primary group-hover:glow">Istanbul, Turkey</span>
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <Linkedin className="h-5 w-5" />
+                  <div className="flex items-center space-x-2 group">
+                    <Linkedin className="h-5 w-5 transition-all duration-500 ease-in-out group-hover:text-primary" />
                     <a
                       href="https://linkedin.com/in/ilkay-baytar"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-primary transition-colors"
+                      className="transition-all duration-500 ease-in-out hover:text-primary hover:glow"
                     >
                       LinkedIn
                     </a>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Github className="h-5 w-5" />
+                  <div className="flex items-center space-x-2 group">
+                    <Github className="h-5 w-5 transition-all duration-500 ease-in-out group-hover:text-primary" />
                     <a
                       href="https://github.com/ibaytar"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-primary transition-colors"
+                      className="transition-all duration-500 ease-in-out hover:text-primary hover:glow"
                     >
                       GitHub
                     </a>
