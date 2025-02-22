@@ -8,7 +8,6 @@ import emailjs from "@emailjs/browser";
 import { Github, Linkedin, Mail, MapPin, Loader2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 declare global {
