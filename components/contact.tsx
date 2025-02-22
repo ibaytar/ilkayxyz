@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import emailjs from "@emailjs/browser";
 import { Github, Linkedin, Mail, MapPin } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 declare global {
   interface Window {
@@ -45,7 +46,7 @@ const Contact = () => {
     if (!form.current) return;
 
     if (!recaptchaToken) {
-      alert("Please complete the reCAPTCHA verification");
+      toast.error("Please complete the reCAPTCHA verification");
       return;
     }
 
@@ -63,10 +64,10 @@ const Contact = () => {
       form.current.reset();
       window.grecaptcha.reset();
       setRecaptchaToken("");
-      alert("Your message has been sent successfully!");
+      toast.success("Your message has been sent successfully!");
     } catch (error) {
       console.error("Failed to send email");
-      alert("Failed to send message. Please try again.");
+      toast.error("Failed to send message. Please try again.");
     }
   };
 
