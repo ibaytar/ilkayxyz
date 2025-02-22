@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import emailjs from "@emailjs/browser";
-import { Github, Linkedin, Mail, MapPin } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Loader2 } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -21,6 +21,7 @@ declare global {
 const Contact = () => {
   const form = useRef<HTMLFormElement>(null);
   const [recaptchaToken, setRecaptchaToken] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     window.onRecaptchaVerify = (token: string) => {
@@ -42,11 +43,13 @@ const Contact = () => {
 
   const sendEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!form.current) return;
 
     if (!recaptchaToken) {
       toast.error("Please complete the reCAPTCHA verification");
+      setIsLoading(false);
       return;
     }
 
@@ -68,6 +71,8 @@ const Contact = () => {
     } catch (error) {
       console.error("Failed to send email");
       toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,8 +117,19 @@ const Contact = () => {
                   data-sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
                   data-callback="onRecaptchaVerify"
                 />
-                <Button type="submit" disabled={!recaptchaToken}>
-                  Send Message
+                <Button 
+                  type="submit" 
+                  disabled={!recaptchaToken || isLoading}
+                  className="w-full"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Message'
+                  )}
                 </Button>
               </form>
             </div>
