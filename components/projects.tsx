@@ -1,5 +1,8 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { motion } from "framer-motion"
 
 const projects = [
   {
@@ -50,41 +53,85 @@ const projects = [
 ]
 
 const Projects = () => {
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  }
+
+  const listItemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { opacity: 1, x: 0 }
+  }
+
+  const techBadgeVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1 }
+  }
+
   return (
     <section id="projects" className="container mx-auto max-w-5xl py-12 md:py-24 lg:py-32">
-      <h2 className="mb-8 text-3xl font-bold gradient-text">Projects</h2>
+      <motion.h2 
+        className="mb-8 text-3xl font-bold gradient-text"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+      >
+        Projects
+      </motion.h2>
       <div className="grid gap-6 md:grid-cols-2">
-        {projects.map((project) => (
-          <Card key={project.id}>
-            <CardHeader>
-              <CardTitle>{project.title}</CardTitle>
-              <CardDescription>
-                {project.description} - {project.date}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="list-disc pl-5 mb-4">
-                {project.details.map((detail) => (
-                  <li 
-                    key={`${project.id}-${detail.toLowerCase().slice(0, 20).replace(/\s+/g, '-')}`}
-                    className="text-sm mb-1 text-primary"
-                  >
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech) => (
-                  <Badge 
-                    key={`${project.id}-${tech.toLowerCase().replace(/\s+/g, '-')}`}
-                    variant="outline"
-                  >
-                    {tech}
-                  </Badge>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+        {projects.map((project, index) => (
+          <motion.div
+            key={project.id}
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 + index * 0.2 }}
+          >
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle>{project.title}</CardTitle>
+                    <CardDescription>{project.description}</CardDescription>
+                  </div>
+                  <CardDescription>{project.date}</CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc pl-5 space-y-2 mb-4">
+                  {project.details.map((detail, dIndex) => (
+                    <motion.li
+                      key={dIndex}
+                      variants={listItemVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.4 + index * 0.2 + dIndex * 0.1 }}
+                      className="text-sm text-primary"
+                    >
+                      {detail}
+                    </motion.li>
+                  ))}
+                </ul>
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies.map((tech, tIndex) => (
+                    <motion.div
+                      key={`${project.id}-${tech.toLowerCase().replace(/\s+/g, '-')}`}
+                      variants={techBadgeVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: 0.6 + index * 0.2 + tIndex * 0.1 }}
+                    >
+                      <Badge variant="outline">{tech}</Badge>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
       </div>
     </section>
