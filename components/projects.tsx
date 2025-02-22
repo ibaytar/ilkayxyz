@@ -88,8 +88,9 @@ const Projects = () => {
             whileInView="visible"
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 + index * 0.2 }}
+            className="h-full"
           >
-            <Card>
+            <Card className="h-full flex flex-col">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
@@ -99,7 +100,7 @@ const Projects = () => {
                   <CardDescription>{project.date}</CardDescription>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-grow flex flex-col justify-between">
                 <ul className="list-disc pl-5 space-y-2 mb-4">
                   {project.details.map((detail, dIndex) => (
                     <motion.li

@@ -74,8 +74,9 @@ const Experience = () => {
             whileInView="visible"
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 + index * 0.2 }}
+            className="h-full"
           >
-            <Card>
+            <Card className="h-full flex flex-col">
               <CardHeader>
                 <CardTitle>{exp.title}</CardTitle>
                 <CardDescription>
@@ -83,7 +84,7 @@ const Experience = () => {
                 </CardDescription>
                 <CardDescription>{exp.period}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-grow">
                 <ul className="list-disc pl-5 space-y-2">
                   {exp.responsibilities.map((responsibility, rIndex) => (
                     <motion.li

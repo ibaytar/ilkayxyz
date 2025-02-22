@@ -40,9 +40,10 @@ const About = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.7, ease: "easeOut", delay: 0.2 }}
+        className="h-full"
       >
-        <Card>
-          <CardContent className="pt-6">
+        <Card className="h-full flex flex-col">
+          <CardContent className="pt-6 flex-grow">
             <motion.p 
               className="mb-6 text-lg text-primary"
               initial={{ opacity: 0, y: 20 }}
